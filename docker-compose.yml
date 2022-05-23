@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-    mysql-hackersdb:
+    hackerrank-mysql-db:
         image: mysql:8
         environment:
             - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
@@ -15,8 +15,21 @@ services:
             - ./scripts/mysql:/docker-entrypoint-initdb.d
         ports:
             - "${MYSQL_PORT}:3306"
-            
-#    python-hackerrank:
-#        build: .
-#        volumes:
-#            - ./target/data:/project/target/data
+        networks:
+            - hackerrank_network
+           
+    hackerrank-python-env:
+        build:
+            context: .
+        volumes:
+            - ./target/data:/project/target/data
+        networks:
+            - hackerrank_network
+        depends_on:
+            - hackerrank-mysql-db
+        restart:
+            on-failure
+
+networks:
+    hackerrank_network: 
+        driver: bridge

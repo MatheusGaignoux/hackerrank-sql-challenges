@@ -11,7 +11,7 @@ def main():
     config = {
     "user": "docker",
     "password": "docker",
-    "host": "127.0.0.1",
+    "host": "hackerrank-mysql-db",
     "database": "hackerrank"
     }
 
