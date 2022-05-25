@@ -5,7 +5,7 @@ from os.path import dirname
 from pymysql import connect
 from datetime import datetime
 
-path = "/project/target/data/15_of_sql_learning_solution.csv"
+path = "/project/target/data/15_days_of_sql_learning_solution.csv"
 
 def main():
     config = {
