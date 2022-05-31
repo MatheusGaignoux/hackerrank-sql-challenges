@@ -1,3 +1,4 @@
+insert into hackerrank_db.15_days_of_sql_learning 
 select submission_date, 
 	(
 		select count(distinct y.hacker_id)
@@ -27,7 +28,9 @@ select submission_date,
 		from hackers
 		where 1 = 1 
 			and hacker_id = first_hacker_id	
-	) as first_hacker_name
+	) as first_hacker_name,
+	'airflow-mysql-query-type' as job_type,
+	current_timestamp() as trigged_at
 from (select distinct submission_date from submissions) x
 group by submission_date
 ;

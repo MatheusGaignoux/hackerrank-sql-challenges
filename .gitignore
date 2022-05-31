@@ -1,2 +1,5 @@
 mysql/data/
+postgres/data/
+target/data/
+__pycache__
 venv

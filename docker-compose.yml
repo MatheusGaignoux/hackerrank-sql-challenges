@@ -1,8 +1,9 @@
 version: "3"
 
 services:
-    hackerrank-mysql-db:
+    hackerrank-mysql:
         image: mysql:8
+        container_name: hackerrank-db-mysql
         environment:
             - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
             - MYSQL_DATABASE=${MYSQL_DATABASE}
@@ -11,23 +12,74 @@ services:
         volumes:
             - ./mysql/data:/var/lib/mysql
             - ./data:/project/data/
-            - ./config/my.cnf:/etc/mysql/my.cnf
-            - ./scripts/mysql:/docker-entrypoint-initdb.d
+            - ./mysql/config/my.cnf:/etc/mysql/my.cnf
+            - ./mysql/scripts:/docker-entrypoint-initdb.d
         ports:
             - "${MYSQL_PORT}:3306"
         networks:
             - hackerrank_network
-           
-    hackerrank-python-env:
-        build:
-            context: .
+        
+    airflow-postgres:
+        image: postgres:14
+        container_name: airflow-metadata-postgres
+        environment:
+            - POSTGRES_USER=${POSTGRES_USER}
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+            - POSTGRES_DB=${POSTGRES_DATABASE}
         volumes:
-            - ./target/data:/project/target/data
+            - ./postgres/data:/var/lib/postgresql/data
+        ports:
+            - "${POSTGRES_PORT}:5432"
+        networks:
+            - hackerrank_network
+    
+    hackerrank-airflow-init:
+        build: 
+            context: .
+            dockerfile: ./airflow/custom-airflow.dockerfile
+        container_name: hackerrank-airflow-init
+        volumes:
+            - ./airflow/dags:/airflow/dags
+            - ./solutions:/solutions
         networks:
             - hackerrank_network
         depends_on:
-            - hackerrank-mysql-db
-        restart:
+            - airflow-postgres
+        restart: 
+            on-failure
+        
+    hackerrank-airflow-webserver:
+        build: 
+            context: .
+            dockerfile: ./airflow/custom-airflow.dockerfile
+        container_name: hackerrank-airflow-webserver
+        volumes:
+            - ./airflow/dags:/airflow/dags
+            - ./solutions:/solutions
+        ports:
+            - 8080:8080
+        networks:
+            - hackerrank_network
+        command: airflow webserver
+        depends_on:
+            - hackerrank-airflow-init
+        restart: 
+            on-failure
+        
+    hackerrank-airflow-scheduler:
+        build: 
+            context: .
+            dockerfile: ./airflow/custom-airflow.dockerfile
+        container_name: hackerrank-airflow-scheduler
+        volumes:
+            - ./airflow/dags:/airflow/dags
+            - ./solutions:/solutions
+        networks:
+            - hackerrank_network
+        command: airflow scheduler
+        depends_on:
+            - hackerrank-airflow-webserver
+        restart: 
             on-failure
 
 networks:

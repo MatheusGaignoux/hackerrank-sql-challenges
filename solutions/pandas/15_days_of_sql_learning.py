@@ -5,14 +5,14 @@ from os.path import dirname
 from pymysql import connect
 from datetime import datetime
 
-path = "/project/target/data/15_days_of_sql_learning_solution.csv"
+def run_15_days_of_sql_learning():
+    path = "/target/data/15_days_of_sql_learning_solution.csv"
 
-def main():
     config = {
-    "user": "docker",
-    "password": "docker",
-    "host": "hackerrank-mysql-db",
-    "database": "hackerrank"
+    "user": "hackerrank_user",
+    "password": "hackerrank_pass",
+    "database": "hackerrank_db",
+    "host": "hackerrank-db-mysql"
     }
 
     conn = connect(**config)
@@ -67,7 +67,7 @@ def main():
         .sort_values(["submission_date"])
     )
 
-    df.to_csv(path)
+    df.to_csv(path, index = False)
 
 if __name__ == "__main__":
-    main()
+    run_15_days_of_sql_learning()

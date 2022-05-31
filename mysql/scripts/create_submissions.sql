@@ -1,5 +1,5 @@
-drop table if exists hackerrank.submissions;
-create table hackerrank.submissions (
+drop table if exists hackerrank_db.submissions;
+create table hackerrank_db.submissions (
     submission_date date not null,
     submission_id integer not null,
     hacker_id integer not null,
@@ -7,9 +7,8 @@ create table hackerrank.submissions (
 )
 ;
 
-load data infile "/project/data/hackers_table.csv" into table hackerrank.submissions
+load data infile "/project/data/submissions.csv" into table hackerrank_db.submissions
 fields terminated by ','
 enclosed by ''
 lines terminated by '\n'
-ignore 1 rows
 ;

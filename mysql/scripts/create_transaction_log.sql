@@ -1,4 +1,4 @@
-create table if not exists hackerrank.transaction_log (
+create table if not exists hackerrank_db.transaction_log (
     id integer not null,
     paid_by text not null,
     paid_to text not null,
@@ -6,7 +6,7 @@ create table if not exists hackerrank.transaction_log (
     transacted_on date
 );
 
-load data infile "/project/data/transaction_log.csv" into table hackerrank.transaction_log
+load data infile "/project/data/transaction_log.csv" into table hackerrank_db.transaction_log
 fields terminated by ","
 enclosed by ''
 lines terminated by "\n"
